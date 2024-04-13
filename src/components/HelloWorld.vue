@@ -1,11 +1,26 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, reactive, onMounted } from 'vue';
+import configService from './../configService';
 
 defineProps({
   msg: String,
 })
 
 const count = ref(0)
+
+const config = reactive({
+  authServiceUrl: '',
+  poolId: ''
+});
+
+onMounted(async () => {
+  const configData = await configService.fetchConfig();
+  if (configData) {
+    config.authServiceUrl = configData.authServiceUrl;
+    config.poolId = configData.poolId;
+  }
+});
+
 </script>
 
 <template>
@@ -17,13 +32,23 @@ const count = ref(0)
       Edit
       <code>components/HelloWorld.vue</code> to test HMR
     </p>
+    <p>
+      My configuration:
+    <ul>
+      <li>
+        authServiceUrl: {{ config.authServiceUrl }}
+      </li>
+      <li>
+        poolId: {{ config.poolId }}
+      </li>
+    </ul>
+    </p>
   </div>
 
   <p>
     Check out
-    <a href="https://vuejs.org/guide/quick-start.html#local" target="_blank"
-      >create-vue</a
-    >, the official Vue + Vite starter
+    <a href="https://vuejs.org/guide/quick-start.html#local" target="_blank">create-vue</a>, the official Vue + Vite
+    starter
   </p>
   <p>
     Install
